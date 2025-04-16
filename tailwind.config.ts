@@ -84,12 +84,28 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        'typing': {
+          from: { width: '0' },
+          to: { width: '100%' }
+        },
+        'blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' }
+        }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        'typing': 'typing 3.5s steps(40, end)',
+        'cursor-blink': 'blink 1s step-end infinite'
+			},
+      height: {
+        'screen-minus-nav': 'calc(100vh - 4rem)',
+      },
+      transitionProperty: {
+        'height': 'height',
+      }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
