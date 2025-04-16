@@ -6,16 +6,20 @@ import CodeEditor from "@/components/CodeEditor";
 import Console from "@/components/Console";
 import AIAssistant from "@/components/AIAssistant";
 import ProjectManager from "@/components/ProjectManager";
+import EnvironmentSelector from "@/components/EnvironmentSelector";
 import HeaderActions from "@/components/HeaderActions";
 import { useIsMobile, useDeviceType } from "@/hooks/use-mobile";
+import { Environment } from "@/lib/environmentOptions";
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedEnvironment, setSelectedEnvironment] = useState<Environment | null>(null);
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [showProjects, setShowProjects] = useState(true);
+  const [showEnvironmentSelector, setShowEnvironmentSelector] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const isMobile = useIsMobile();
   const { isTablet } = useDeviceType();
@@ -64,6 +68,14 @@ const Index = () => {
     setSelectedProjectId(projectId);
     setSelectedFile(null); // Reset selected file when changing projects
     setShowProjects(false); // Hide projects view after selection
+    setShowEnvironmentSelector(true); // Show environment selector after project selection
+  };
+
+  // Handle environment selection
+  const handleEnvironmentSelect = (environmentId: Environment) => {
+    setSelectedEnvironment(environmentId);
+    setSelectedFile(null); // Reset selected file when changing environment
+    setShowEnvironmentSelector(false); // Hide environment selector after selection
   };
 
   // Toggle sidebar visibility
@@ -80,7 +92,7 @@ const Index = () => {
     );
   }
 
-  // Main content based on authentication and project selection
+  // Main content based on authentication and project/environment selection
   const renderMainContent = () => {
     if (!user) {
       return (
@@ -155,6 +167,14 @@ const Index = () => {
       );
     }
 
+    if (showEnvironmentSelector || !selectedEnvironment) {
+      return (
+        <div className="h-[calc(100vh-4rem)] overflow-auto bg-white dark:bg-gray-900 flex items-center justify-center">
+          <EnvironmentSelector onSelectEnvironment={handleEnvironmentSelect} />
+        </div>
+      );
+    }
+
     return (
       <div className="h-[calc(100vh-4rem)] flex flex-col">
         <div className="flex flex-1 overflow-hidden">
@@ -163,6 +183,7 @@ const Index = () => {
             <button 
               onClick={toggleSidebar}
               className="md:hidden absolute top-16 left-2 z-10 p-2 bg-gray-200 dark:bg-gray-700 rounded-md"
+              aria-label="Show file explorer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
@@ -172,24 +193,29 @@ const Index = () => {
           <div className={`${sidebarVisible ? 'block' : 'hidden'} ${isMobile ? 'absolute z-10 bg-white dark:bg-gray-900 h-full' : 'relative'} md:block w-full md:w-64 lg:w-72 overflow-hidden border-r border-gray-200 dark:border-gray-700`}>
             <div className="flex justify-between items-center p-2 md:hidden border-b border-gray-200 dark:border-gray-700">
               <span className="font-medium">Files</span>
-              <button onClick={toggleSidebar} className="p-1">
+              <button onClick={toggleSidebar} className="p-1" aria-label="Hide file explorer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
             <FileExplorer
               projectId={selectedProjectId}
+              environment={selectedEnvironment}
               onFileSelect={handleFileSelect}
               selectedFileId={selectedFile?.id || null}
             />
           </div>
           
           <div className="flex-1 overflow-hidden">
-            <CodeEditor file={selectedFile} />
+            <CodeEditor 
+              file={selectedFile} 
+              environment={selectedEnvironment}
+            />
           </div>
         </div>
         <div style={{ height: isMobile ? "40%" : "30%" }}>
           <Console
             projectId={selectedProjectId}
+            environment={selectedEnvironment}
             currentFile={selectedFile ? { id: selectedFile.id, type: selectedFile.type } : null}
           />
         </div>
@@ -216,6 +242,8 @@ const Index = () => {
             selectedProjectId === "2" ? "Personal Website" : 
             "New Project"
           ) : undefined}
+          environment={selectedEnvironment}
+          onChangeEnvironment={() => setShowEnvironmentSelector(true)}
         />
       </div>
       

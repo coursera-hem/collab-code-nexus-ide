@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Environment } from "@/lib/environmentOptions";
 
 interface CodeEditorProps {
   file: {
@@ -8,9 +9,10 @@ interface CodeEditorProps {
     content: string;
     type: string;
   } | null;
+  environment: Environment | null;
 }
 
-const CodeEditor = ({ file }: CodeEditorProps) => {
+const CodeEditor = ({ file, environment }: CodeEditorProps) => {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,7 +31,9 @@ const CodeEditor = ({ file }: CodeEditorProps) => {
     return (
       <div className="h-full flex items-center justify-center bg-white dark:bg-gray-900">
         <p className="text-gray-500 dark:text-gray-400">
-          Select a file or create a new one to start coding
+          {environment ? 
+            `Select a file or create a new one to start coding in ${environment}` : 
+            'Select an environment to start coding'}
         </p>
       </div>
     );
@@ -49,13 +53,18 @@ const CodeEditor = ({ file }: CodeEditorProps) => {
     <div className="h-full">
       <div className="h-8 bg-gray-200 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center px-4">
         <span className="text-sm font-medium">{file.name}</span>
+        {environment === 'web' && file.type === 'html' && (
+          <span className="ml-auto text-xs text-blue-600 dark:text-blue-400">
+            Live Preview Available
+          </span>
+        )}
       </div>
       <textarea
         className="w-full h-[calc(100%-2rem)] p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm focus:outline-none resize-none code-font"
         value={code}
         onChange={handleCodeChange}
         spellCheck={false}
-        placeholder="Start coding here..."
+        placeholder={`Start coding in ${environment || 'selected environment'}...`}
       />
     </div>
   );
