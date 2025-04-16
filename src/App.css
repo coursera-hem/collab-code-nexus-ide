@@ -104,3 +104,10 @@ p {
     border-bottom: 1px solid var(--border-color);
   }
 }
+
+/* Extra small screen adjustments */
+@media (max-width: 480px) {
+  .xs\:max-w-[150px] {
+    max-width: 150px;
+  }
+}

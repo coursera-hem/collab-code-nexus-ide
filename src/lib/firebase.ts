@@ -1,5 +1,10 @@
 
-// Firebase configuration mock (will be replaced with actual Firebase implementation)
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD-AVyKriBQb_pDhKrair9xc2--iQ-1x9w",
   authDomain: "creativetutorial-b9226.firebaseapp.com",
@@ -10,24 +15,10 @@ const firebaseConfig = {
   appId: "1:230911171823:web:3199de4c937cbaa7de8f1a"
 };
 
-// Mock Firebase objects for initial setup
-const app = { name: 'app-mock' };
-const auth = {
-  currentUser: null,
-  onAuthStateChanged: (callback: (user: any) => void) => {
-    callback(null);
-    return () => {};
-  }
-};
-const db = {
-  collection: () => ({
-    doc: () => ({
-      get: async () => ({ data: () => ({}) }),
-      set: async () => {},
-      update: async () => {},
-    }),
-  }),
-};
-const storage = {};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 export { app, auth, db, storage };
