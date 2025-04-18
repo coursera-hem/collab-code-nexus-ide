@@ -144,3 +144,19 @@ p {
   from, to { border-color: transparent }
   50% { border-color: #3b82f6 }
 }
+
+/* Fix for text visibility in code editor */
+textarea {
+  color: #333 !important;
+}
+
+.dark textarea {
+  color: #fff !important;
+}
+
+/* Code font styling */
+textarea.code-font {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+}

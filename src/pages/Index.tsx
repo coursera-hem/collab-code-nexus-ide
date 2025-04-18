@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
 import FileExplorer from "@/components/FileExplorer";
 import CodeEditor from "@/components/CodeEditor";
@@ -24,7 +26,7 @@ const Index = () => {
   const isMobile = useIsMobile();
   const { isTablet } = useDeviceType();
 
-  // Initialize dark mode based on user preference
+  // Initialize dark mode based on user preference and listen for auth state changes
   useEffect(() => {
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDarkMode(isDark);
@@ -32,16 +34,20 @@ const Index = () => {
     if (isDark) {
       document.documentElement.classList.add("dark");
     }
-
-    // Simulate auth loading
-    setTimeout(() => {
+    
+    // Listen for authentication state changes
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
-    }, 1000);
+    });
     
     // Hide sidebar by default on mobile
     if (isMobile) {
       setSidebarVisible(false);
     }
+    
+    // Cleanup function
+    return () => unsubscribe();
   }, [isMobile]);
 
   // Toggle dark mode

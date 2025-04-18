@@ -60,7 +60,7 @@ const CodeEditor = ({ file, environment }: CodeEditorProps) => {
         )}
       </div>
       <textarea
-        className="w-full h-[calc(100%-2rem)] p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm focus:outline-none resize-none code-font"
+        className="w-full h-[calc(100%-2rem)] p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm focus:outline-none resize-none"
         value={code}
         onChange={handleCodeChange}
         spellCheck={false}

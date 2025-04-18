@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { auth } from "@/lib/firebase";
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 
 interface User {
   displayName: string | null;
@@ -19,18 +21,22 @@ const Navbar = ({ user, darkMode, toggleDarkMode }: NavbarProps) => {
   const isMobile = useIsMobile();
 
   const handleGoogleSignIn = async () => {
-    // Mock sign in
-    console.log("Sign in with Google");
-  };
-
-  const handleGithubSignIn = async () => {
-    // Mock sign in
-    console.log("Sign in with GitHub");
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      console.log("Signed in with Google");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
   };
 
   const handleSignOut = async () => {
-    // Mock sign out
-    console.log("Sign out");
+    try {
+      await signOut(auth);
+      console.log("Signed out");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (
